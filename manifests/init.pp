@@ -16,9 +16,24 @@ class donodejs (
 
 ) {
 
-  # install node and npm
+  # install node and npm (after dist-upgrade on Ubuntu)
   class { 'nodejs' :
     manage_repo => true,
+    require => [Exec['up-to-date']],
+    before => Anchor['donodejs-node-ready'],
+  }
+  
+  case $operatingsystem {
+    centos, redhat, fedora: {
+    }
+    ubuntu, debian: {
+      # Ubuntu requires a kick to get up to the right version
+      exec { 'donodejs-force-node-update' :
+        command => '/usr/bin/apt-get -y dist-upgrade',
+        require => [Class['nodejs']],
+        before => Anchor['donodejs-node-ready'],
+      }
+    }
   }
   
   anchor { 'donodejs-node-ready' : }
