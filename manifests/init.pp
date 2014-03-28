@@ -36,13 +36,21 @@ class donodejs (
     }
   }
   
-  anchor { 'donodejs-node-ready' : }
+  anchor { 'donodejs-node-ready' : }->
   
+  # update using npm
+  exec { 'donodejs-node-npm-update' :
+    path => '/bin:/usr/bin:/sbin:/usr/sbin',
+    command => 'npm update -g',
+  }
+  
+  anchor { 'donodejs-npm-ready' : }
+
   # install express
   package { 'express':
     ensure   => present,
     provider => 'npm',
-    require  => Anchor['donodejs-node-ready'],
+    require => [Anchor['donodejs-npm-ready']],
   }
 
   if ($firewall) {
