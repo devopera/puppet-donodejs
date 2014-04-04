@@ -5,17 +5,34 @@ define donodejs::base (
   # setup defaults
 
   $user = 'web',
-  $port = 3000,
+  $app_port = 3000,
   $app_name = 'hellonode',
 
   # install directory
   $target_dir = '/var/www/html',
+
+  $firewall = true,
+  $monitor = true,
   
   # end of class arguments
   # ----------------------
   # begin class
 
 ) {
+
+  if ($firewall) {
+    # open port
+    class { 'donodejs::firewall' :
+      port => $app_port,
+    }
+  }
+
+  if ($monitor) {
+    # setup monitoring
+    class { 'donodejs::monitor' :
+      port => $app_port,
+    }
+  }
 
   # create and inflate node/express example
   exec { 'donodejs-base-create' :
