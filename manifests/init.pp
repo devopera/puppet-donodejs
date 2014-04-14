@@ -42,11 +42,29 @@ class donodejs (
   
   anchor { 'donodejs-npm-ready' : }
 
-  # install express
-  package { 'express':
-    ensure   => present,
-    provider => 'npm',
-    require => [Anchor['donodejs-npm-ready']],
+  # install express and express command line
+  if ! defined(Package['express']) {
+    package { 'express':
+      ensure   => present,
+      provider => 'npm',
+      require => [Anchor['donodejs-npm-ready']],
+    }
+  }
+  if ! defined(Package['express-generator']) {
+    package { 'express-generator':
+      ensure   => present,
+      provider => 'npm',
+      require => [Anchor['donodejs-npm-ready']],
+    }
+  }
+
+  # install forever for background operation
+  if ! defined(Package['forever']) {
+    package { 'forever':
+      ensure   => present,
+      provider => 'npm',
+      require => [Anchor['donodejs-npm-ready']],
+    }
   }
 
 }
