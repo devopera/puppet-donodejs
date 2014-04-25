@@ -5,8 +5,9 @@ define donodejs::base (
   # setup defaults
 
   $user = 'web',
-  $app_port = 3000,
-  $app_name = 'hellonode',
+  $port = 3000,
+  $app_name = $title,
+  $content = 'Express',
 
   # install directory
   $target_dir = '/var/www/html',
@@ -25,17 +26,25 @@ define donodejs::base (
 
   if ($firewall) {
     # open port
-    class { 'donodejs::firewall' :
-      port => $app_port,
+    @docommon::fireport { "donodejs-node-server-${port}":
+      port => $port,
+      protocol => 'tcp',
     }
   }
 
   if ($monitor) {
     # setup monitoring
-    class { 'donodejs::monitor' :
-      port => $app_port,
+    @nagios::service { "http_content:${port}-donodejs-${::fqdn}":
+      # no DNS, so need to refer to machine by external IP address
+      check_command => "check_http_port_url_content!${::ipaddress}!${port}!/!'${content}'",
+    }
+    @nagios::service { "int:process_node-donodejs-${::fqdn}":
+      check_command => "check_procs!1:!1:!node",
     }
   }
+
+  # if we've got a message of the day, include
+  @domotd::register { "Node(${port})" : }
 
   # create and inflate node/express example
   exec { "donodejs-base-create-${title}" :
