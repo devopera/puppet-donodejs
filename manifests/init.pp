@@ -38,8 +38,9 @@ class donodejs (
   exec { 'donodejs-node-npm-update' :
     path => '/bin:/usr/bin:/sbin:/usr/sbin',
     command => 'npm update -g',
+    before => Anchor['donodejs-npm-ready'],
   }
-  
+
   anchor { 'donodejs-npm-ready' : }
 
   # install express and express command line

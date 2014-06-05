@@ -41,7 +41,7 @@ define donodejs::base (
       check_command => "check_http_port_url_content!${::ipaddress}!${port}!/!'${content}'",
     }
     @nagios::service { "int:process_node-donodejs-${::fqdn}":
-      check_command => "check_nrpe_procs_postfix",
+      check_command => "check_nrpe_procs_node",
     }
   }
 
@@ -68,25 +68,11 @@ define donodejs::base (
   }
 
   # create service and start on machine startup
-  case $operatingsystem {
-    centos, redhat, fedora: {
-    }
-    ubuntu, debian: {
-    }
-  }
-  # experimenting with symmetric file resource for both CentOS and Ubuntu
-  file { "donodejs-base-service-script-${title}":
-    name => "/etc/init.d/${app_name}",
-    content => template('donodejs/service.erb'),
-    owner => 'root',
-    group => 'root',
-    mode => '0755',
-  }
-  service { "donodejs-base-service-${title}":
-    name => "${app_name}",
-    enable => true,
-    ensure => 'running',
-    require => [Exec["donodejs-base-create-${title}"], File["donodejs-base-service-script-${title}"]],
+  donodejs::foreverservice { "donodejs-base-service-${title}":
+    app_name => $app_name,
+    app_script => 'bin/www',
+    target_dir => $target_dir,
+    require => [Exec["donodejs-base-create-${title}"]],
   }
 
   # create symlink from our home folder
