@@ -26,7 +26,7 @@ define donodejs::foreverservice (
   # experimenting with symmetric file resource for both CentOS and Ubuntu
   file { "donodejs-foreverservice-script-${title}":
     name => "/etc/init.d/${app_name}",
-    content => template('donodejs/service.erb'),
+    content => template('donodejs/service.generic.erb'),
     owner => 'root',
     group => 'root',
     mode => '0755',
