@@ -1,0 +1,15 @@
+{
+  "name": "devopera-donodejs",
+  "version": "0.9.0",
+  "author": "(c) Alex Stanhope, Devopera.com",
+  "summary": "Devopera NodeJS and NPM configuration module",
+  "license": "Apache License, Version 2.0",
+  "source": "https://github.com/devopera/puppet-donodejs",
+  "issues_url": "https://github.com/devopera/puppet-donodejs/issues",
+  "description": "",
+  "project_page": "http://devopera.com/module/donodejs",
+  "dependencies": [
+    {"name":"devopera/docommon","version_requirement":"0.9.0"},
+    {"name":"puppetlabs/nodejs","version_requirement":"0.4.0"}
+  ]
+}
