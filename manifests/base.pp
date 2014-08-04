@@ -60,7 +60,7 @@ define donodejs::base (
 
   # create and inflate node/express example
   exec { "donodejs-base-create-${title}" :
-    path => '/bin:/usr/bin:/sbin:/usr/sbin',
+    path => "/bin:/usr/bin:${donodejs::params::node_bin}:/sbin:/usr/sbin",
     command => "express ${target_dir}/${app_name} && cd ${target_dir}/${app_name} && npm install",
     user => $user,
     group => $group,
