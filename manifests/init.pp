@@ -13,41 +13,33 @@ class donodejs (
 ) inherits donodejs::params {
 
   # install node and npm (after dist-upgrade on Ubuntu)
-  class { 'nodejs' :
-    manage_repo => true,
-    require => [Exec['up-to-date']],
-    before => Anchor['donodejs-node-ready'],
-  }
+  #class { 'nodejs' :
+  #  manage_repo => true,
+  #  require => [Exec['up-to-date']],
+  #  before => Anchor['donodejs-node-ready'],
+  #}
 
-  # # use node default version to create 'node' and 'npm' symlinks, without version number
-  # file { "donodejs-symlink-bin-without-version-node":
-  #   ensure  => 'link',
-  #   path    => "${donodejs::params::node_target_dir}/node",
-  #   target  => "${donodejs::params::node_unpack_folder}/bin/node",
-  #   require => [Class['nodejs']],
-  #   before  => Anchor['donodejs-node-ready'],
-  # }
-  # file { "donodejs-symlink-bin-without-version-npm":
-  #   ensure  => 'link',
-  #   path    => "${donodejs::params::node_target_dir}/npm",
-  #   target  => "${donodejs::params::node_unpack_folder}/bin/npm",
-  #   require => [Class['nodejs']],
-  #   before  => Anchor['donodejs-node-ready'],
-  # }
-
+  # https://github.com/joyent/node/wiki/installing-node.js-via-package-manager#enterprise-linux-and-fedora
   case $operatingsystem {
     centos, redhat, fedora: {
+      $repo_source = 'https://rpm.nodesource.com/setup'
     }
     ubuntu, debian: {
-      # Ubuntu requires a kick to get up to the right version
-      exec { 'donodejs-force-node-update' :
-        command => '/usr/bin/apt-get -y dist-upgrade',
-        require => [Class['nodejs']],
-        before => Anchor['donodejs-node-ready'],
-      }
+      $repo_source = 'https://deb.nodesource.com/setup'
     }
   }
   
+  exec { 'donodejs-repo' :
+    path => '/bin:/sbin:/usr/bin:/usr/sbin',
+    command => "curl -sL ${repo_source} | bash -",
+  }
+  if ! defined(Package['nodejs']) {
+    package { 'nodejs' :
+      require => Exec['donodejs-repo'],
+      before => Anchor['donodejs-node-ready'],
+    }
+  }
+
   anchor { 'donodejs-node-ready' : }->
   
   # update using npm
