@@ -1,6 +1,6 @@
 {
   "name": "devopera-donodejs",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": "(c) Alex Stanhope, Devopera.com",
   "summary": "Devopera NodeJS and NPM configuration module",
   "license": "Apache License, Version 2.0",

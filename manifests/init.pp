@@ -75,5 +75,13 @@ class donodejs (
       require => [Anchor['donodejs-npm-ready']],
     }
   }
+  # install localtunnel for convenience
+  if ! defined(Package['localtunnel']) {
+    package { 'localtunnel':
+      ensure   => present,
+      provider => 'npm',
+      require => [Anchor['donodejs-npm-ready']],
+    }
+  }
 
 }
