@@ -43,11 +43,12 @@ class donodejs (
   anchor { 'donodejs-node-ready' : }->
   
   # update using npm
-  exec { 'donodejs-node-npm-update' :
-    path => "/bin:/usr/bin:${donodejs::params::node_bin}:/sbin:/usr/sbin",
-    command => 'npm update -g',
-    before => Anchor['donodejs-npm-ready'],
-  }
+  # temporarily disable npm update because 3.10.9 breaks RHEL7
+  #exec { 'donodejs-node-npm-update' :
+  #  path => "/bin:/usr/bin:${donodejs::params::node_bin}:/sbin:/usr/sbin",
+  #  command => 'npm update -g',
+  #  before => Anchor['donodejs-npm-ready'],
+  #}
 
   anchor { 'donodejs-npm-ready' : }
 
