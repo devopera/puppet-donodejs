@@ -26,6 +26,12 @@ class donodejs (
     }
     ubuntu, debian: {
       $repo_source = 'https://deb.nodesource.com/setup'
+      # setup a symlink for nodejs on Ubuntu (not forced)
+      exec { 'donodejs-symlink' :
+        path => '/bin:/sbin:/usr/bin:/usr/sbin',
+        command => 'ln -s /usr/bin/node /usr/bin/nodejs',
+        require => [Package['nodejs']],
+      }
     }
   }
   
@@ -40,7 +46,14 @@ class donodejs (
     }
   }
 
-  anchor { 'donodejs-node-ready' : }->
+  anchor { 'donodejs-node-ready' : }
+
+  if ! defined(Package['npm']) {
+    package { 'npm' :
+      require => Anchor['donodejs-node-ready'],
+      before => Anchor['donodejs-npm-ready'],
+    }
+  }
   
   # update using npm
   # temporarily disable npm update because 3.10.9 breaks RHEL7
