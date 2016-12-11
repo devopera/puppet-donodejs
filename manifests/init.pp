@@ -27,13 +27,13 @@ class donodejs (
     ubuntu, debian: {
       $repo_source = 'https://deb.nodesource.com/setup_6.x'
       # setup a symlink for nodejs on Ubuntu (not forced)
-      file { '/usr/bin/node':
-        ensure  => 'link',
-        replace => 'no',
-        target  => '/usr/bin/nodejs',
-        mode    => '0755',
-        require => [Package['nodejs']],
-      }
+      #file { '/usr/bin/node':
+      #  ensure  => 'link',
+      #  replace => 'no',
+      #  target  => '/usr/bin/nodejs',
+      #  mode    => '0755',
+      #  require => [Package['nodejs']],
+      #}
     }
   }
   
@@ -42,20 +42,21 @@ class donodejs (
     command => "curl -sL ${repo_source} | bash -",
   }
   if ! defined(Package['nodejs']) {
+    # nodejs package include npm
     package { 'nodejs' :
       require => Exec['donodejs-repo'],
-      before => Anchor['donodejs-node-ready'],
+      before => [Anchor['donodejs-node-ready'], Anchor['donodejs-npm-ready']],
     }
   }
 
   anchor { 'donodejs-node-ready' : }
 
-  if ! defined(Package['npm']) {
-    package { 'npm' :
-      require => Anchor['donodejs-node-ready'],
-      before => Anchor['donodejs-npm-ready'],
-    }
-  }
+  #if ! defined(Package['npm']) {
+  #  package { 'npm' :
+  #    require => Anchor['donodejs-node-ready'],
+  #    before => Anchor['donodejs-npm-ready'],
+  #  }
+  #}
   
   # update using npm
   # temporarily disable npm update because 3.10.9 breaks RHEL7
