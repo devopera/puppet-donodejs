@@ -22,10 +22,10 @@ class donodejs (
   # https://github.com/joyent/node/wiki/installing-node.js-via-package-manager#enterprise-linux-and-fedora
   case $operatingsystem {
     centos, redhat, fedora: {
-      $repo_source = 'https://rpm.nodesource.com/setup_6.x'
+      $repo_source = 'https://rpm.nodesource.com/setup_10.x'
     }
     ubuntu, debian: {
-      $repo_source = 'https://deb.nodesource.com/setup_6.x'
+      $repo_source = 'https://deb.nodesource.com/setup_10.x'
       # setup a symlink for nodejs on Ubuntu (not forced)
       #file { '/usr/bin/node':
       #  ensure  => 'link',
